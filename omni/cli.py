@@ -1,3 +1,4 @@
+# omni\cli.py
 import argparse
 from omni.core.dispatcher import dispatch
 
@@ -9,6 +10,7 @@ def main():
 
     parser.add_argument("--copy", action="store_true", help="Stream copy (no re-encoding)")
     parser.add_argument("--codec", help="Video codec (e.g., libx264)")
+    parser.add_argument("--compatibility", help="e.g. windows")
     parser.add_argument("--resolution", help="e.g. 1280x720")
     parser.add_argument("--preset", help="ffmpeg preset (fast, slow, etc)")
 
@@ -17,6 +19,7 @@ def main():
     options = {
         "copy": args.copy,
         "codec": args.codec,
+        "compatibility": args.compatibility,
         "resolution": args.resolution,
         "preset": args.preset,
     }
