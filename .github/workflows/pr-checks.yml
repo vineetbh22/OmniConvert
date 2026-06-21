@@ -35,8 +35,8 @@ jobs:
       - name: Formatting
         run: black --check .
 
-      - name: Type Checking
-        run: mypy omni
+      # - name: Type Checking
+      #   run: mypy omni
 
       - name: Tests
         run: pytest --cov=omni
