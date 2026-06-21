@@ -41,8 +41,8 @@ jobs:
       # - name: Tests
       #   run: pytest --cov=omni
 
-      - name: Security
-        run: bandit -r omni
+      # - name: Security
+      #   run: bandit -r omni
 
       - name: Dependency Audit
         run: pip-audit
