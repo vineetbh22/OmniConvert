@@ -19,22 +19,31 @@ if not shutil.which("ffmpeg"):
 
 def get_duration(input_file):
     cmd = [
-        "ffprobe", "-v", "error",
-        "-show_entries", "format=duration",
-        "-of", "default=noprint_wrappers=1:nokey=1",
-        input_file
+        "ffprobe",
+        "-v",
+        "error",
+        "-show_entries",
+        "format=duration",
+        "-of",
+        "default=noprint_wrappers=1:nokey=1",
+        input_file,
     ]
     result = subprocess.run(cmd, stdout=subprocess.PIPE)
     return float(result.stdout)
 
+
 def get_video_metadata(file_path):
     cmd = [
         "ffprobe",
-        "-v", "error",
-        "-select_streams", "v:0",
-        "-show_entries", "stream=width,height,bit_rate",
-        "-of", "json",
-        file_path
+        "-v",
+        "error",
+        "-select_streams",
+        "v:0",
+        "-show_entries",
+        "stream=width,height,bit_rate",
+        "-of",
+        "json",
+        file_path,
     ]
 
     result = subprocess.run(cmd, stdout=subprocess.PIPE)
@@ -42,11 +51,11 @@ def get_video_metadata(file_path):
 
     stream = data["streams"][0]
     bitrate = stream.get("bit_rate")
-    bitrate = int(bitrate) // 1000 if bitrate else 0        # kbps
+    bitrate = int(bitrate) // 1000 if bitrate else 0  # kbps
 
     return {
         "resolution": f"{stream.get('width')}x{stream.get('height')}",
-        "bitrate": bitrate
+        "bitrate": bitrate,
     }
 
 
@@ -91,13 +100,13 @@ def convert_video(input_file: str, output_file: str, options: dict = None):
         process = subprocess.Popen(
             cmd,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,          #STDOUT,   # 🔥 merge streams
+            stderr=subprocess.PIPE,  # STDOUT,   # 🔥 merge streams
             text=True,
             bufsize=1,
             # universal_newlines=True
         )
         tqdm.write("\n🎬 Converting:\n")
-        
+
         total_duration = get_duration(input_file)
 
         # tracking vars
@@ -130,19 +139,19 @@ def convert_video(input_file: str, output_file: str, options: dict = None):
                             pbar.update(delta)
                             last_progress = progress
 
-                    except:
+                    except Exception:
                         pass
 
                 if "frame=" in line:
                     try:
                         frame = int(line.split("frame=")[1].split()[0])
-                    except:
+                    except Exception:
                         frame = 0
 
                 if "speed=" in line:
                     try:
                         speed = line.split("speed=")[1].split()[0]
-                    except:
+                    except Exception:
                         speed = "0x"
 
                 s_value = float(speed.rstrip("x")) if speed.strip() != "N/A" else 0.0
@@ -152,12 +161,14 @@ def convert_video(input_file: str, output_file: str, options: dict = None):
                 # update description (live info)
                 pbar.set_description(f"🎞️ Frame: {frame}s |⚡Speed: {speed}")
                 # update postfix (live info)
-                pbar.set_postfix({
-                    "⏱ Time": f"{current_time:.1f}s/{total_duration:.1f}s",
-                    # "🎞️frame": frame,
-                    # "⚡ speed": speed,
-                    "⏳ETA": eta_str
-                })
+                pbar.set_postfix(
+                    {
+                        "⏱ Time": f"{current_time:.1f}s/{total_duration:.1f}s",
+                        # "🎞️frame": frame,
+                        # "⚡ speed": speed,
+                        "⏳ETA": eta_str,
+                    }
+                )
 
         process.wait()
 
@@ -165,7 +176,9 @@ def convert_video(input_file: str, output_file: str, options: dict = None):
         duration = end_time - start_time
 
         if process.returncode != 0:
-            logging.error(process.stderr)
+            stderr_output = process.stderr.read()
+            stdout_output = process.stdout.read()
+            logging.error("stderr: %s\nstdout: %s", stderr_output, stdout_output)
             raise Exception("❌ FFmpeg failed")
 
         metadata = get_video_metadata(output_file)
@@ -178,13 +191,19 @@ def convert_video(input_file: str, output_file: str, options: dict = None):
         print(f"⚡ Bitrate: {metadata['bitrate']} kbps")
         print(f"⏳ Time Taken: {_format_time(duration)}")
 
-        logging.info("✅ Converted: %s → %s \n %s\t%s", input_file, output_file, _format_size(file_size_bytes), _format_time(duration))
-        
+        logging.info(
+            "✅ Converted: %s → %s \n %s\t%s",
+            input_file,
+            output_file,
+            _format_size(file_size_bytes),
+            _format_time(duration),
+        )
+
     except subprocess.CalledProcessError as e:
         logging.error("❌ Conversion failed")
         raise e
     finally:
-        if 'file_size_bytes' in locals() and 'metadata' in locals():
+        if "file_size_bytes" in locals() and "metadata" in locals():
             _track_log(
                 input_file,
                 output_file,
@@ -192,5 +211,5 @@ def convert_video(input_file: str, output_file: str, options: dict = None):
                 metadata["resolution"],
                 metadata["bitrate"],
                 duration,
-                options
+                options,
             )
