@@ -1,0 +1,20 @@
+name: Main Branch Source Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  verify-source:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Verify PR comes from development
+        run: |
+          echo "Source branch: ${{ github.head_ref }}"
+
+          if [ "${{ github.head_ref }}" != "development" ]; then
+            echo "Only development can be merged into main"
+            exit 1
+          fi
