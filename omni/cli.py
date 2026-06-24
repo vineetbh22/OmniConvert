@@ -16,8 +16,14 @@ def main():
     parser.add_argument("--compatibility", help="e.g. windows")
     parser.add_argument("--resolution", help="e.g. 1280x720")
     parser.add_argument("--preset", help="ffmpeg preset (fast, slow, etc)")
-    parser.add_argument("--quality", type=int, default=85, help="Quality for images (1-100)")
-    parser.add_argument("--enhance", action="store_true", help="Smart image enhancement (contrast, sharpness)")
+    parser.add_argument(
+        "--quality", type=int, default=85, help="Quality for images (1-100)"
+    )
+    parser.add_argument(
+        "--enhance",
+        action="store_true",
+        help="Smart image enhancement (contrast, sharpness)",
+    )
 
     args = parser.parse_args()
 
