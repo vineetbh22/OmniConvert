@@ -10,12 +10,13 @@ logging.basicConfig(level=logging.INFO)
 
 IMAGE_FORMATS = {"png", "jpg", "jpeg", "webp", "bmp", "tiff", "ico"}
 
+
 def convert_image(input_file: str, output_file: str, options: dict = None):
     if options is None:
         options = {}
 
     start_time = time.time()
-    
+
     try:
         with Image.open(input_file) as img:
             # 1. Smart Orientation (Fixes sideways photos)
@@ -28,7 +29,9 @@ def convert_image(input_file: str, output_file: str, options: dict = None):
                 background = Image.new("RGB", img.size, (255, 255, 255))
                 if img.mode == "P":
                     img = img.convert("RGBA")
-                background.paste(img, mask=img.split()[3] if img.mode == "RGBA" else None)
+                background.paste(
+                    img, mask=img.split()[3] if img.mode == "RGBA" else None
+                )
                 img = background
             elif img.mode == "RGBA" and output_ext not in ["png", "webp"]:
                 # Fallback for other formats that don't support alpha
@@ -53,7 +56,9 @@ def convert_image(input_file: str, output_file: str, options: dict = None):
                         target_width = int(res_parts[0])
                         target_height = int(res_parts[1])
                         # Thumbnail maintains aspect ratio within the bounds
-                        img.thumbnail((target_width, target_height), Image.Resampling.LANCZOS)
+                        img.thumbnail(
+                            (target_width, target_height), Image.Resampling.LANCZOS
+                        )
                 except Exception as e:
                     logging.warning(f"⚠️ Could not resize: {e}")
 
@@ -72,7 +77,7 @@ def convert_image(input_file: str, output_file: str, options: dict = None):
         duration = end_time - start_time
         file_size_bytes = os.path.getsize(output_file)
 
-        print(f"\n🎉 Image Conversion Complete!")
+        print("\n🎉 Image Conversion Complete!")
         print(f"📁 File: {output_file}")
         print(f"📦 Size: {_format_size(file_size_bytes)}")
         print(f"🖼️ Dimensions: {img.width}x{img.height}")

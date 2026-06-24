@@ -12,7 +12,7 @@ def dispatch(input_file: str, output_file: str, options: dict):
 
     if input_ext in VIDEO_FORMATS and output_ext in VIDEO_FORMATS:
         return convert_video(input_file, output_file, options)
-    
+
     if input_ext in IMAGE_FORMATS and output_ext in IMAGE_FORMATS:
         return convert_image(input_file, output_file, options)
 

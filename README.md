@@ -1,213 +1,230 @@
 # 🔄 OmniConvert
 
-**OmniConvert** is a fast, extensible command-line file conversion tool built in **Python**, designed to handle documents, images, data formats, and video/audio files with high quality and efficiency.
+**OmniConvert** is a fast, extensible command-line file conversion tool built in Python.
 
-Built with Raspberry Pi compatibility in mind, OmniConvert leverages powerful underlying tools like **FFmpeg**, **Pillow**, and **Pandoc** to deliver reliable and high-performance conversions.
+The goal of OmniConvert is simple:
 
----
+> Convert files reliably, efficiently, and with minimal dependencies.
 
-## ✨ Features
-
-- 🔁 **Universal file conversion**
-  - Documents (PDF, DOCX, TXT)
-  - Images (PNG, JPG, WEBP)
-  - Data (JSON, CSV, XML)
-  - Media (MP4, AVI, MKV, MP3, WAV)
-
-* ⚡ **Optimized for performance**
-  - Uses native tools like FFmpeg for speed
-  - Efficient on low-power devices like Raspberry Pi
-
-* 🎯 **High-quality output**
-  - Minimal loss in media conversions
-  - Configurable encoding settings
-
-* 🧩 **Modular & extensible**
-  - Easily add new formats and converters
-
-* 💻 **CLI-first design**
-  - Simple and scriptable interface
+Designed with automation, scripting, and low-powered devices in mind, OmniConvert aims to provide a consistent conversion experience across images, documents, data formats, and media files.
 
 ---
 
-## ⚙️ Requirements
+## Features
 
-- Python 3.8+
-- FFmpeg (required for video/audio)
-- Pandoc (for document conversion)
-- LibreOffice (optional, for advanced document support)
+### Universal File Conversion
 
----
+Support for common file formats including:
 
-## 📦 Installation
+#### Images
 
-### 1. Clone the repository
+- PNG
+- JPG / JPEG
+- WEBP
 
-```bash id="cln123"
-git clone https://github.com/your-username/omni-convert.git
-cd omni-convert
-```
+#### Documents
 
-### 2. Install Python dependencies
+- PDF
+- DOCX
+- TXT
 
-```bash id="pip456"
-pip install -r requirements.txt
-```
+#### Data
 
-### 3. Install system dependencies
+- JSON
+- CSV
+- XML
 
-#### On Raspberry Pi / Debian-based systems:
+#### Media
 
-```bash id="apt789"
-sudo apt update
-sudo apt install ffmpeg pandoc libreoffice
-```
-
----
-
-#### On Windows:
-
-Download from
-_"https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip"_
-
-## ▶️ Usage
-
-### Basic Command
-
-```bash id="cmd001"
-python cli.py input.mp4 output.avi
-```
-
-### With Options
-
-```bash id="cmd002"
-python cli.py input.mp4 output.mp4 --quality high --preset fast
-```
+- MP4
+- AVI
+- MKV
+- MP3
+- WAV
 
 ---
 
-## 🧪 Examples
+### CLI First
 
-### 🎥 Convert Video
+OmniConvert is built for:
 
-```bash id="vid001"
-python cli.py video.mp4 video.avi
+- Terminal users
+- Automation workflows
+- Shell scripting
+- CI/CD pipelines
+
+---
+
+### Extensible Architecture
+
+New formats can be added without major architectural changes.
+
+Converters are isolated and routed through a central dispatcher, making the project easy to extend and maintain.
+
+---
+
+### Raspberry Pi Friendly
+
+OmniConvert is designed to work efficiently on low-powered hardware while still supporting high-quality conversions.
+
+---
+
+## Installation
+
+### Requirements
+
+- Python 3.11+
+- uv
+- FFmpeg (for media conversions)
+- Pandoc (for document conversions)
+- LibreOffice (optional)
+
+---
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/vineetbh22/OmniConvert.git
+cd OmniConvert
 ```
 
-### 🎵 Extract Audio from Video
+### Install Dependencies
 
-```bash id="aud001"
-python cli.py input.mp4 output.mp3
+```bash
+uv sync
 ```
 
-### 🖼️ Convert Image
+### Install Development Dependencies
 
-```bash id="img001"
-python cli.py image.png image.jpg
-```
-
-### 📄 Convert Document
-
-```bash id="doc001"
-python cli.py file.docx file.pdf
-```
-
-### 📊 Convert Data
-
-```bash id="data001"
-python cli.py data.json data.csv
+```bash
+uv sync --group dev
 ```
 
 ---
 
-## ⚡ Performance Tips (Raspberry Pi)
+## Usage
 
-- Use hardware acceleration when available:
+Basic example:
 
-  ```bash id="hw001"
-  --codec h264_v4l2m2m
-  ```
+```bash
+python -m omni.cli "input.png" "output.jpg" --enhance
+```
 
-- Reduce resolution for faster processing:
+Media conversion:
 
-  ```bash id="res001"
-  --resolution 1280x720
-  ```
+```bash
+python -m omni.cli "video.mkv" "video.mp4" --compatibility windows
+```
 
-- Avoid re-encoding when possible:
+Document conversion:
 
-  ```bash id="copy001"
-  --copy
-  ```
+```bash
+python -m omni.cli "input.docx" "output.pdf"
+```
+
+Data conversion:
+
+```bash
+python -m omni.cli "data.json" "data.csv"
+```
 
 ---
 
-## 🧱 Project Structure
+## Development
 
-```id="struct001"
-omni-convert/
-│── logs/
-│   ├── conversion_log.jsonl
-│── omni/
+Run tests:
+
+```bash
+uv run pytest
+```
+
+Run Ruff:
+
+```bash
+uv run ruff check .
+```
+
+Install pre-commit hooks:
+
+```bash
+uv run pre-commit install
+```
+
+Run all repository checks:
+
+```bash
+uv run pre-commit run --all-files
+```
+
+---
+
+## Documentation
+
+Additional project documentation:
+
+- CONTRIBUTING.md
+- CONVENTIONS.md
+- ARCHITECTURE.md
+- ROADMAP.md
+
+---
+
+## Project Structure
+
+```text
+omniconvert/
+├── omni/
 │   ├── converters/
-│   │   ├── video.py
-│   │   ├── image.py
-│   │   ├── document.py
-│   │   └── data.py
 │   ├── core/
-│   │   └── dispatcher.py
-│   ├── utils/
-│   │   └── format_size.py
-│   │   └── format_time.py
-│   │   └── log_tracker.py
-│   └── cli.py
-│── requirements.txt
-│── README.md
-│── LICENSE
+│   └── utils/
+├── tests/
+├── logs/
+├── README.md
+├── CONTRIBUTING.md
+├── CONVENTIONS.md
+├── ARCHITECTURE.md
+└── ROADMAP.md
 ```
 
 ---
 
-## 🧩 Extending OmniConvert
+## Roadmap Highlights
 
-To add a new format:
+Planned features include:
 
-1. Create a converter in `omni/converters/`
-2. Implement conversion logic
-3. Register it in the dispatcher
+- Batch conversion
+- Preset profiles
+- Interactive CLI mode
+- Plugin system
+- Hardware acceleration support
+- REST API
+- Web interface
 
----
-
-## 🚀 Roadmap
-
-- [ ] Batch file conversion
-- [ ] Interactive CLI mode
-- [ ] Preset profiles (fast, high-quality, low-size)
-- [ ] Web interface
-- [ ] Plugin system
-- [ ] GPU acceleration support
+See ROADMAP.md for details.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
-Contributions are welcome!
+Contributions are welcome.
 
-1. Fork the repository
-2. Create your branch (`git checkout -b feature/new-feature`)
-3. Commit changes
-4. Open a Pull Request
+Please read CONTRIBUTING.md before opening an issue or Pull Request.
 
 ---
 
-## 📄 License
+## License
 
 MIT License
 
 ---
 
-## 💡 Vision
+## Vision
 
-OmniConvert aims to be a **universal, developer-friendly CLI tool** that makes file conversion simple, fast, and reliable — even on low-powered devices like Raspberry Pi.
+OmniConvert aims to become a universal, developer-friendly conversion toolkit that prioritizes:
 
----
+- Reliability
+- Performance
+- Simplicity
+- Extensibility
+
+One tool. Many formats.
